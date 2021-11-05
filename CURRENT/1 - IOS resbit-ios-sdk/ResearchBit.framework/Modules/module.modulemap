@@ -1,0 +1,11 @@
+framework module ResearchBit {
+  umbrella header "ResearchBit.h"
+
+  export *
+  module * { export * }
+}
+
+module ResearchBit.Swift {
+    header "ResearchBit-Swift.h"
+    requires objc
+}

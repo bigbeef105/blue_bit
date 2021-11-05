@@ -1,0 +1,32 @@
+
+1) Reshub starts scanning for bluetooth devices advertising as Bluebits
+    a) Bluebit advertisement data should contain Manufacturer-Specific data (type 0xFF)
+    b) Reshub expects the Manufacturer-Specific data to be at least 25 bytes in length
+    c) The first two bytes of the Manufacturer-Specific data should be the company-id which should be set to 0x4C and 0x00 (Apple)
+    d) The third and fourth bytes of the Manufacturer-Specific data are expected to be 0x02 and 0x15 (signifies ibeacon)
+    e) Bytes 5-21 should be this UUID: '152ad1e0-63af-11ea-bc55-0242ac130003'
+
+2) Reshub will configure the MTU with the Bluebit
+
+3) Reshub then reads the GATT database from the Bluebit to determine the relevant characteristic handles
+
+4) Reshub will then subscribe to the DATA, TRANSFERRING, TRANSFER_ERROR, and TRANSFER_SUMMARY_DATA characteristics
+
+5) Reshub then reads the serial number from the Bluebit by reading from the SERIAL_NUMBER characteristic
+
+6) The data transfer is then initiated by Reshub byt writing a value of 0x01 to the TRANSFER_SUMMARY_DATA characteristic
+
+7) transfer summary data process...
+
+8) Once the data transfer is complete (Bluebit notifies value of 0x00 on TRANSFERRING characteristic), the Reshub will parse all of the data packets
+and confirm that all packets were received and the data is valid.
+
+9) Reshub then writes an ACK or NACK to the RESPONSE characteristic
+
+10) Reshub then waits for a notification from the Bluebit on the TRANSFER_ERROR characteristic
+
+11) If the Bluebit doesn't have the TIME/RTC characteristic or the Reshub doesn't have the current time, then Reshub will disconnect from the Bluebit
+
+12) If the Bluebit does have the TIME/RTC characteristic, then Reshub will get the current time and will write it (with GATT response required) to the TIME/RTC characteristic
+
+13) Reshub will then disconnect from the Bluebit
